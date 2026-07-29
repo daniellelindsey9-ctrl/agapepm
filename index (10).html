@@ -1,0 +1,11 @@
+# Netlify configuration for Agape Property Management
+
+[build]
+  publish = "."
+
+[build.environment]
+  # The Firebase web API key (AIza...) embedded in the site's pages is a public
+  # client identifier, not a secret — security is enforced by Firebase Auth and
+  # Firestore rules. This disables Netlify's pattern-based secrets detection
+  # that was failing the build on it.
+  SECRETS_SCAN_SMART_DETECTION_ENABLED = "false"

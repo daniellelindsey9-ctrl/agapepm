@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Agape — Worker Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --green: #4CAF50;
+  --green-dark: #388E3C;
+  --bg: #111111;
+  --surface: #1a1a1a;
+  --surface2: #222222;
+  --border: rgba(255,255,255,0.08);
+  --border2: rgba(255,255,255,0.14);
+  --text: rgba(255,255,255,0.9);
+  --muted: rgba(255,255,255,0.4);
+  --r: 10px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: 'Jost', sans-serif; font-weight: 300; min-height: 100vh; }
+
+/* HEADER */
+.header { background: #0a0a0a; border-bottom: 1px solid var(--border); padding: 0 24px; height: 52px; display: flex; align-items: center; justify-content: space-between; }
+.header-brand { display: flex; align-items: center; gap: 10px; }
+.header-brand-name { font-family: 'Cormorant Garamond', serif; font-size: 20px; color: white; }
+.header-brand-sub { font-size: 9px; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; color: var(--green); }
+.header-right { font-size: 11px; color: var(--muted); }
+
+/* LOGIN SCREEN */
+.login-screen { min-height: calc(100vh - 52px); display: flex; align-items: center; justify-content: center; padding: 24px; }
+.login-box { width: 100%; max-width: 400px; }
+.login-title { font-family: 'Cormorant Garamond', serif; font-size: 36px; font-weight: 300; margin-bottom: 4px; }
+.login-sub { font-size: 13px; color: var(--muted); margin-bottom: 28px; line-height: 1.6; }
+.login-field { margin-bottom: 14px; }
+.login-field label { font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: 6px; }
+.login-input { width: 100%; background: var(--surface); border: 1px solid var(--border2); border-radius: 8px; padding: 13px 16px; font-family: 'Jost', sans-serif; font-size: 15px; color: var(--text); outline: none; transition: border 0.2s; }
+.login-input:focus { border-color: var(--green); }
+.login-btn { width: 100%; padding: 14px; background: var(--green); color: #111; border: none; border-radius: 8px; font-family: 'Jost', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; cursor: pointer; margin-top: 8px; transition: all 0.2s; }
+.login-btn:hover { background: var(--green-dark); }
+.login-btn:disabled { opacity: 0.4; cursor: default; }
+.login-error { font-size: 12px; color: #EF5350; margin-top: 8px; display: none; padding: 8px 12px; background: rgba(239,83,80,0.1); border-radius: 6px; }
+.login-forgot { font-size: 12px; color: var(--muted); text-align: right; margin-top: 6px; cursor: pointer; display: block; }
+.login-forgot:hover { color: var(--green); }
+.login-join { font-size: 12px; color: var(--muted); text-align: center; margin-top: 20px; }
+.login-join a { color: var(--green); text-decoration: none; }
+
+/* MAIN APP */
+.app { display: none; }
+.app.show { display: block; }
+
+/* NAV TABS */
+.nav-tabs { display: flex; background: #0a0a0a; border-bottom: 1px solid var(--border); overflow-x: auto; scrollbar-width: none; }
+.nav-tabs::-webkit-scrollbar { display: none; }
+.nav-tab { flex-shrink: 0; padding: 14px 20px; font-size: 11px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; white-space: nowrap; }
+.nav-tab.active { color: var(--green); border-bottom-color: var(--green); }
+
+/* PAGES */
+.page { display: none; padding: 20px 20px 80px; max-width: 600px; margin: 0 auto; }
+.page.active { display: block; }
+
+/* CARDS */
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 16px; margin-bottom: 12px; }
+.card-title { font-family: 'Cormorant Garamond', serif; font-size: 20px; margin-bottom: 4px; }
+.card-sub { font-size: 12px; color: var(--muted); margin-bottom: 14px; }
+
+/* STAT GRID */
+.stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 16px; }
+.stat { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 16px; }
+.stat-val { font-family: 'Cormorant Garamond', serif; font-size: 32px; color: var(--green); margin-bottom: 2px; }
+.stat-lbl { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+
+/* TIER BADGE */
+.tier-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 10px; font-weight: 500; padding: 4px 12px; border-radius: 20px; margin-bottom: 12px; }
+.tier-standard { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.5); border: 1px solid var(--border2); }
+.tier-premium { background: rgba(21,101,192,0.15); color: #64B5F6; border: 1px solid rgba(21,101,192,0.3); }
+.tier-white-glove { background: rgba(245,127,23,0.15); color: #FFB74D; border: 1px solid rgba(245,127,23,0.3); }
+
+/* JOB ROWS */
+.job-row { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 14px 16px; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.job-row-left { flex: 1; min-width: 0; }
+.job-addr { font-size: 14px; font-weight: 500; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.job-meta-row { font-size: 11px; color: var(--muted); }
+.job-right { text-align: right; flex-shrink: 0; }
+.job-pay { font-family: 'Cormorant Garamond', serif; font-size: 20px; color: var(--green); }
+.job-status { font-size: 10px; font-weight: 500; padding: 3px 10px; border-radius: 20px; margin-top: 4px; display: inline-block; }
+.status-paid { background: rgba(76,175,80,0.15); color: var(--green); }
+.status-pending { background: rgba(255,183,77,0.15); color: #FFB74D; }
+.status-complete { background: rgba(100,181,246,0.15); color: #64B5F6; }
+
+/* CERT CARD */
+.cert-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 14px 16px; margin-bottom: 8px; display: flex; align-items: center; gap: 12px; }
+.cert-icon { font-size: 20px; flex-shrink: 0; }
+.cert-info { flex: 1; }
+.cert-name { font-size: 14px; font-weight: 500; margin-bottom: 2px; }
+.cert-sub { font-size: 11px; color: var(--muted); }
+.cert-badge { font-size: 10px; font-weight: 500; padding: 3px 10px; border-radius: 20px; flex-shrink: 0; }
+.cert-earned { background: rgba(76,175,80,0.15); color: var(--green); }
+.cert-locked { background: rgba(255,255,255,0.06); color: var(--muted); }
+
+/* PROFILE */
+.profile-avatar { width: 64px; height: 64px; border-radius: 50%; background: var(--green); display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 600; color: #111; margin-bottom: 12px; }
+.profile-name { font-family: 'Cormorant Garamond', serif; font-size: 28px; margin-bottom: 2px; }
+.profile-email { font-size: 13px; color: var(--muted); margin-bottom: 16px; }
+
+/* EARNINGS CHART */
+.earnings-bar { display: flex; align-items: flex-end; gap: 6px; height: 80px; margin-bottom: 8px; }
+.e-bar { flex: 1; background: rgba(76,175,80,0.2); border-radius: 4px 4px 0 0; position: relative; min-height: 4px; transition: all 0.4s; }
+.e-bar.highlight { background: var(--green); }
+.e-label { font-size: 9px; color: var(--muted); text-align: center; margin-top: 4px; }
+.earnings-labels { display: flex; gap: 6px; }
+.earnings-label { flex: 1; font-size: 9px; color: var(--muted); text-align: center; }
+
+/* SIGNOUT BTN */
+.signout-btn { width: 100%; padding: 12px; background: none; border: 1px solid var(--border2); color: var(--muted); border-radius: 8px; font-family: 'Jost', sans-serif; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer; margin-top: 16px; transition: all 0.2s; }
+.signout-btn:hover { border-color: rgba(255,255,255,0.3); color: var(--text); }
+
+/* EMPTY STATE */
+.empty-state { text-align: center; padding: 40px 20px; color: var(--muted); }
+.empty-icon { font-size: 36px; margin-bottom: 12px; }
+.empty-title { font-size: 16px; font-weight: 500; color: var(--text); margin-bottom: 6px; }
+.empty-sub { font-size: 13px; line-height: 1.6; }
+
+/* SECTION LABEL */
+.section-label { font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; margin-top: 20px; }
+
+/* LOADING */
+.loading { display: flex; align-items: center; justify-content: center; padding: 40px; }
+.spinner { width: 24px; height: 24px; border: 2px solid var(--border2); border-top-color: var(--green); border-radius: 50%; animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+@media (max-width: 480px) {
+  .stat-grid { grid-template-columns: 1fr 1fr; }
+  .page { padding: 16px 16px 80px; }
+  .nav-tab { padding: 12px 14px; font-size: 10px; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-brand">
+    <span class="header-brand-name">agape</span>
+    <span class="header-brand-sub">provider portal</span>
+  </div>
+  <div class="header-right" id="headerRight"></div>
+</div>
+
+<!-- LOGIN SCREEN -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-box">
+    <div class="login-title">Welcome back</div>
+    <div class="login-sub">Sign in to your Agape provider account to view your jobs, earnings, and certifications.</div>
+    <div class="login-field">
+      <label>Email address</label>
+      <input type="email" id="loginEmail" class="login-input" placeholder="your@email.com" autocomplete="email">
+    </div>
+    <div class="login-field">
+      <label>Password</label>
+      <input type="password" id="loginPassword" class="login-input" placeholder="••••••••" autocomplete="current-password">
+      <span class="login-forgot" onclick="forgotPassword()">Forgot password?</span>
+    </div>
+    <div class="login-error" id="loginError">Incorrect email or password. Please try again.</div>
+    <button class="login-btn" id="loginBtn" onclick="doLogin()">Sign in &rarr;</button>
+    <div class="login-join">New provider? <a href="/join/">Apply to join Agape &rarr;</a></div>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div class="app" id="mainApp">
+  <!-- NAV TABS -->
+  <div class="nav-tabs">
+    <div class="nav-tab active" onclick="showTab('dashboard',this)">Dashboard</div>
+    <div class="nav-tab" onclick="showTab('jobs',this)">Job history</div>
+    <div class="nav-tab" onclick="showTab('earnings',this)">Earnings</div>
+    <div class="nav-tab" onclick="showTab('certifications',this)">Certifications</div>
+    <div class="nav-tab" onclick="showTab('profile',this)">Profile</div>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div class="page active" id="tab-dashboard">
+    <div class="loading" id="dashLoading"><div class="spinner"></div></div>
+    <div id="dashContent" style="display:none;">
+      <div style="margin-top:16px;" class="section-label">Overview</div>
+      <div class="stat-grid">
+        <div class="stat">
+          <div class="stat-val" id="statJobs">0</div>
+          <div class="stat-lbl">Jobs completed</div>
+        </div>
+        <div class="stat">
+          <div class="stat-val" id="statEarnings">$0</div>
+          <div class="stat-lbl">Total earned</div>
+        </div>
+        <div class="stat">
+          <div class="stat-val" id="statRating">—</div>
+          <div class="stat-lbl">Avg rating</div>
+        </div>
+        <div class="stat">
+          <div class="stat-val" id="statTier">—</div>
+          <div class="stat-lbl">Current tier</div>
+        </div>
+      </div>
+
+      <div class="section-label">Your tier</div>
+      <div class="card">
+        <div class="tier-badge tier-standard" id="tierBadge">Standard</div>
+        <div class="card-title" id="tierTitle">Standard provider</div>
+        <div class="card-sub" id="tierSub">Complete 5 jobs with a 4.8+ rating to unlock Premium tier.</div>
+        <div style="background:var(--surface2);border-radius:6px;height:6px;overflow:hidden;margin-top:12px;">
+          <div style="background:var(--green);height:100%;border-radius:6px;transition:width 0.6s;" id="tierProgress"></div>
+        </div>
+        <div style="font-size:11px;color:var(--muted);margin-top:6px;" id="tierProgressLabel"></div>
+      </div>
+
+      <div class="section-label">Recent jobs</div>
+      <div id="recentJobs">
+        <div class="empty-state">
+          <div class="empty-icon">📋</div>
+          <div class="empty-title">No jobs yet</div>
+          <div class="empty-sub">Your completed jobs will appear here.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JOB HISTORY -->
+  <div class="page" id="tab-jobs">
+    <div class="section-label" style="margin-top:16px;">All jobs</div>
+    <div id="allJobs">
+      <div class="loading"><div class="spinner"></div></div>
+    </div>
+  </div>
+
+  <!-- EARNINGS -->
+  <div class="page" id="tab-earnings">
+    <div class="section-label" style="margin-top:16px;">Earnings overview</div>
+    <div class="stat-grid">
+      <div class="stat">
+        <div class="stat-val" id="earnThisMonth">$0</div>
+        <div class="stat-lbl">This month</div>
+      </div>
+      <div class="stat">
+        <div class="stat-val" id="earnLastMonth">$0</div>
+        <div class="stat-lbl">Last month</div>
+      </div>
+      <div class="stat">
+        <div class="stat-val" id="earnTotal">$0</div>
+        <div class="stat-lbl">All time</div>
+      </div>
+      <div class="stat">
+        <div class="stat-val" id="earnPending">$0</div>
+        <div class="stat-lbl">Pending</div>
+      </div>
+    </div>
+    <div class="section-label">Last 6 months</div>
+    <div class="card">
+      <div class="earnings-bar" id="earningsBar"></div>
+      <div class="earnings-labels" id="earningsLabels"></div>
+    </div>
+    <div class="section-label">Payment history</div>
+    <div id="paymentHistory">
+      <div class="empty-state">
+        <div class="empty-icon">💰</div>
+        <div class="empty-title">No payments yet</div>
+        <div class="empty-sub">Payments appear here after hosts approve your job reports.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CERTIFICATIONS -->
+  <div class="page" id="tab-certifications">
+    <div class="section-label" style="margin-top:16px;">Your certifications</div>
+    <div id="certList"></div>
+    <div class="section-label">How to unlock more</div>
+    <div class="card">
+      <div class="card-sub" style="margin-bottom:0;line-height:1.7;">
+        Complete jobs and earn ratings to unlock higher tier certifications. Training is provided by Agape via GoHighLevel. Contact us to request access to the next certification level.
+      </div>
+    </div>
+  </div>
+
+  <!-- PROFILE -->
+  <div class="page" id="tab-profile">
+    <div style="margin-top:20px;">
+      <div class="profile-avatar" id="profileAvatar">—</div>
+      <div class="profile-name" id="profileName">Loading...</div>
+      <div class="profile-email" id="profileEmail"></div>
+      <div class="section-label">Services offered</div>
+      <div id="profileServices" class="card">
+        <div class="card-sub" style="margin-bottom:0;">Loading...</div>
+      </div>
+      <div class="section-label">Availability</div>
+      <div id="profileAvailability" class="card">
+        <div class="card-sub" style="margin-bottom:0;">Loading...</div>
+      </div>
+      <div class="section-label">Supply levels</div>
+      <div class="card">
+        <div style="font-size:13px;color:var(--muted);line-height:1.6;">Need cards or Clean Spaces refills? Request them through your job checklist or message us directly.</div>
+        <button onclick="requestSupply()" style="margin-top:12px;width:100%;padding:11px;background:var(--green);color:#111;border:none;border-radius:8px;font-family:'Jost',sans-serif;font-size:11px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;">Request resupply &rarr;</button>
+      </div>
+      <button class="signout-btn" onclick="doSignOut()">Sign out</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function showTab(id, el) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  el.classList.add('active');
+}
+
+function doLogin() {
+  var email = document.getElementById('loginEmail').value.trim();
+  var pass  = document.getElementById('loginPassword').value;
+  var btn   = document.getElementById('loginBtn');
+  var err   = document.getElementById('loginError');
+  if (!email || !pass) { err.textContent = 'Please enter your email and password.'; err.style.display = 'block'; return; }
+  btn.disabled = true; btn.textContent = 'Signing in...';
+  err.style.display = 'none';
+  if (window._workerLogin) {
+    window._workerLogin(email, pass).catch(function() {
+      btn.disabled = false; btn.textContent = 'Sign in \u2192';
+      err.textContent = 'Incorrect email or password. Please try again.';
+      err.style.display = 'block';
+    });
+  }
+}
+
+function forgotPassword() {
+  var email = document.getElementById('loginEmail').value.trim();
+  if (!email) { alert('Enter your email address first.'); return; }
+  if (window._workerResetPassword) {
+    window._workerResetPassword(email).then(function() {
+      alert('Password reset email sent! Check your inbox.');
+    }).catch(function() {
+      alert('Could not send reset email. Check the address and try again.');
+    });
+  }
+}
+
+function doSignOut() {
+  if (window._workerSignOut) window._workerSignOut();
+}
+
+function requestSupply() {
+  var name = document.getElementById('profileName').textContent;
+  var msg = encodeURIComponent('Hi Agape! Supply request from ' + name + '.\nPlease send thank you cards and Clean Spaces 8oz to my address on file. Thank you!');
+  window.open('https://wa.me/14696058877?text=' + msg, '_blank');
+}
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' && document.getElementById('loginScreen').style.display !== 'none') doLogin();
+});
+
+function fmt(n) { return '$' + parseFloat(n||0).toFixed(0); }
+
+function renderWorkerData(worker, jobs) {
+  // Hide loading
+  document.getElementById('dashLoading').style.display = 'none';
+  document.getElementById('dashContent').style.display = 'block';
+
+  // Profile
+  var first = worker.firstName || '';
+  var last  = worker.lastName  || '';
+  var initials = (first[0]||'') + (last[0]||'');
+  document.getElementById('profileAvatar').textContent = initials || '?';
+  document.getElementById('profileName').textContent   = first + ' ' + last;
+  document.getElementById('profileEmail').textContent  = worker.email || '';
+  document.getElementById('headerRight').textContent   = 'Hi, ' + first;
+
+  // Services
+  var services = worker.services || worker.serviceTypes || [];
+  document.getElementById('profileServices').innerHTML = services.length
+    ? '<div style="display:flex;flex-wrap:wrap;gap:6px;">' + services.map(function(s) {
+        return '<span style="font-size:11px;font-weight:500;padding:4px 12px;border-radius:20px;background:rgba(76,175,80,0.12);color:#4CAF50;">' + s + '</span>';
+      }).join('') + '</div>'
+    : '<div class="card-sub" style="margin-bottom:0;">No services listed</div>';
+
+  // Availability
+  var avail = worker.availability || [];
+  document.getElementById('profileAvailability').innerHTML = avail.length
+    ? '<div style="font-size:13px;color:var(--muted);">' + avail.join(', ') + '</div>'
+    : '<div class="card-sub" style="margin-bottom:0;">Not set</div>';
+
+  // Stats
+  var completedJobs = jobs.filter(function(j) { return j.status === 'complete' || j.status === 'paid'; });
+  var totalEarned   = completedJobs.reduce(function(s, j) { return s + (j.workerPay || j.workerAmount || 0); }, 0);
+  var tier = worker.tier || 'standard';
+
+  document.getElementById('statJobs').textContent     = completedJobs.length;
+  document.getElementById('statEarnings').textContent = fmt(totalEarned);
+  document.getElementById('statRating').textContent   = worker.rating ? parseFloat(worker.rating).toFixed(1) + '*' : '-';
+  document.getElementById('statTier').textContent     = tier.charAt(0).toUpperCase() + tier.slice(1);
+
+  // Tier badge and progress
+  var tierCfg = {
+    standard:    { cls: 'tier-standard',    label: 'Standard provider',    sub: 'Complete 5 jobs with 4.8+ rating to unlock Premium.', target: 5 },
+    premium:     { cls: 'tier-premium',     label: 'Premium provider',     sub: 'Complete 15 jobs with full certification to unlock White Glove.', target: 15 },
+    'white-glove': { cls: 'tier-white-glove', label: 'White Glove provider', sub: 'You have reached the highest Agape tier. Thank you for your excellence.', target: null }
+  };
+  var cfg = tierCfg[tier] || tierCfg['standard'];
+  document.getElementById('tierBadge').className    = 'tier-badge ' + cfg.cls;
+  document.getElementById('tierBadge').textContent  = tier.charAt(0).toUpperCase() + tier.slice(1);
+  document.getElementById('tierTitle').textContent  = cfg.label;
+  document.getElementById('tierSub').textContent    = cfg.sub;
+  if (cfg.target) {
+    var pct = Math.min(100, Math.round((completedJobs.length / cfg.target) * 100));
+    document.getElementById('tierProgress').style.width    = pct + '%';
+    document.getElementById('tierProgressLabel').textContent = completedJobs.length + ' / ' + cfg.target + ' jobs toward next tier';
+  } else {
+    document.getElementById('tierProgress').style.width    = '100%';
+    document.getElementById('tierProgressLabel').textContent = 'Maximum tier achieved';
+  }
+
+  // Certifications
+  var allCerts = [
+    { key: 'cleaner-basic',       icon: '🧹', name: 'Cleaner Basic',           sub: 'Standard Agape cleaning certification' },
+    { key: 'property-assistant',  icon: '🏠', name: 'Property Assistant',       sub: 'Staging, supply runs, and guest prep' },
+    { key: 'hvac',                icon: '❄️', name: 'HVAC Certified',           sub: 'Filter changes and AC maintenance' },
+    { key: 'plumbing',            icon: '🔧', name: 'Plumbing Certified',       sub: 'Basic repairs and fixture maintenance' },
+    { key: 'lawn',                icon: '🌿', name: 'Lawn Care Certified',      sub: 'Mowing, edging, and landscaping' },
+  ];
+  var workerCerts = worker.certifications || [];
+  var certHTML = allCerts.map(function(c) {
+    var earned = workerCerts.includes(c.key);
+    return '<div class="cert-card">' +
+      '<span class="cert-icon">' + c.icon + '</span>' +
+      '<div class="cert-info"><div class="cert-name">' + c.name + '</div><div class="cert-sub">' + c.sub + '</div></div>' +
+      '<span class="cert-badge ' + (earned ? 'cert-earned">Earned' : 'cert-locked">Locked') + '</span>' +
+      '</div>';
+  }).join('');
+  document.getElementById('certList').innerHTML = certHTML;
+
+  // Render jobs
+  renderJobs(jobs);
+  renderEarnings(jobs);
+}
+
+function renderJobs(jobs) {
+  if (!jobs.length) {
+    var empty = '<div class="empty-state"><div class="empty-icon">📋</div><div class="empty-title">No jobs yet</div><div class="empty-sub">Your completed jobs will appear here.</div></div>';
+    document.getElementById('recentJobs').innerHTML = empty;
+    document.getElementById('allJobs').innerHTML = empty;
+    return;
+  }
+
+  var html = jobs.slice(0, 10).map(function(j) {
+    var date    = j.checkoutDate || j.createdAt || '';
+    var dateStr = date ? new Date(date).toLocaleDateString('en-US', {month:'short', day:'numeric'}) : '-';
+    var pay     = j.workerPay || j.workerAmount || 0;
+    var status  = j.paymentStatus === 'paid' ? 'status-paid">Paid' : j.status === 'complete' ? 'status-complete">Complete' : 'status-pending">Pending';
+    return '<div class="job-row">' +
+      '<div class="job-row-left">' +
+        '<div class="job-addr">' + (j.address || j.propertyAddress || 'Property') + '</div>' +
+        '<div class="job-meta-row">' + dateStr + ' &middot; ' + (j.serviceType || 'Clean') + '</div>' +
+      '</div>' +
+      '<div class="job-right">' +
+        '<div class="job-pay">' + fmt(pay) + '</div>' +
+        '<span class="job-status ' + status + '</span>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+
+  document.getElementById('recentJobs').innerHTML = jobs.length > 3 ? html.split('</div><div class="job-row">').slice(0,3).join('</div><div class="job-row">') + '</div>' : html;
+  document.getElementById('allJobs').innerHTML = html;
+}
+
+function renderEarnings(jobs) {
+  var now   = new Date();
+  var months = [];
+  for (var i = 5; i >= 0; i--) {
+    var d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    months.push({ label: d.toLocaleDateString('en-US', {month:'short'}), year: d.getFullYear(), month: d.getMonth(), total: 0 });
+  }
+
+  jobs.forEach(function(j) {
+    var d = j.checkoutDate ? new Date(j.checkoutDate) : null;
+    if (!d) return;
+    var m = months.find(function(mo) { return mo.year === d.getFullYear() && mo.month === d.getMonth(); });
+    if (m) m.total += (j.workerPay || j.workerAmount || 0);
+  });
+
+  var max = Math.max.apply(null, months.map(function(m) { return m.total; })) || 1;
+  var now_m = now.getMonth();
+
+  document.getElementById('earningsBar').innerHTML = months.map(function(m) {
+    var h = Math.max(4, Math.round((m.total / max) * 80));
+    var isNow = m.month === now_m && m.year === now.getFullYear();
+    return '<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;">' +
+      '<div class="e-bar' + (isNow ? ' highlight' : '') + '" style="height:' + h + 'px;width:100%;"></div>' +
+      '<div class="e-label">' + m.label + '</div>' +
+    '</div>';
+  }).join('');
+
+  var now_jobs     = jobs.filter(function(j) { var d = j.checkoutDate && new Date(j.checkoutDate); return d && d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear(); });
+  var last_jobs    = jobs.filter(function(j) { var d = j.checkoutDate && new Date(j.checkoutDate); return d && d.getMonth() === (now.getMonth()-1+12)%12; });
+  var totalAll     = jobs.reduce(function(s,j) { return s + (j.workerPay||j.workerAmount||0); }, 0);
+  var pendingTotal = jobs.filter(function(j) { return j.paymentStatus !== 'paid'; }).reduce(function(s,j) { return s + (j.workerPay||j.workerAmount||0); }, 0);
+
+  document.getElementById('earnThisMonth').textContent = fmt(now_jobs.reduce(function(s,j){return s+(j.workerPay||0);},0));
+  document.getElementById('earnLastMonth').textContent = fmt(last_jobs.reduce(function(s,j){return s+(j.workerPay||0);},0));
+  document.getElementById('earnTotal').textContent     = fmt(totalAll);
+  document.getElementById('earnPending').textContent   = fmt(pendingTotal);
+}
+</script>
+
+<script type="module">
+  import { initializeApp }    from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { getFirestore, doc, getDoc, collection, query, where, getDocs, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey:            "AIzaSyA4zPUPv5WjTbwdX2cjqxSEe0zJLKPsGC8",
+    authDomain:        "agape-property-management.firebaseapp.com",
+    projectId:         "agape-property-management",
+    storageBucket:     "agape-property-management.firebasestorage.app",
+    messagingSenderId: "1083257058058",
+    appId:             "1:1083257058058:web:0700dfdab2700c0ee280f3"
+  };
+
+  const app  = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db   = getFirestore(app);
+
+  // Expose auth functions
+  window._workerLogin = (email, pass) => signInWithEmailAndPassword(auth, email, pass);
+  window._workerSignOut = () => signOut(auth).then(() => {
+    document.getElementById('mainApp').classList.remove('show');
+    document.getElementById('loginScreen').style.display = 'flex';
+    document.getElementById('loginEmail').value = '';
+    document.getElementById('loginPassword').value = '';
+    document.getElementById('loginBtn').disabled = false;
+    document.getElementById('loginBtn').textContent = 'Sign in \u2192';
+  });
+  window._workerResetPassword = (email) => sendPasswordResetEmail(auth, email);
+
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+      document.getElementById('loginScreen').style.display = 'flex';
+      document.getElementById('mainApp').classList.remove('show');
+      return;
+    }
+
+    // Logged in
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('mainApp').classList.add('show');
+
+    try {
+      // Load worker profile
+      const workerSnap = await getDoc(doc(db, 'workers', user.uid));
+      let worker = workerSnap.exists() ? workerSnap.data() : {};
+
+      // Fallback to users collection
+      if (!workerSnap.exists()) {
+        const userSnap = await getDoc(doc(db, 'users', user.uid));
+        if (userSnap.exists()) worker = userSnap.data();
+      }
+
+      // Load jobs for this worker
+      let jobs = [];
+      try {
+        const jobsSnap = await getDocs(query(
+          collection(db, 'jobs'),
+          where('workerId', '==', user.uid),
+          orderBy('createdAt', 'desc')
+        ));
+        jobs = jobsSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+      } catch(e) {
+        // Try without orderBy if index doesn't exist
+        try {
+          const jobsSnap2 = await getDocs(query(
+            collection(db, 'jobs'),
+            where('workerId', '==', user.uid)
+          ));
+          jobs = jobsSnap2.docs.map(d => ({ id: d.id, ...d.data() }));
+        } catch(e2) { console.log('Jobs load error:', e2); }
+      }
+
+      // Also try workerEmail as fallback
+      if (!jobs.length && worker.email) {
+        try {
+          const emailJobsSnap = await getDocs(query(
+            collection(db, 'jobs'),
+            where('workerEmail', '==', worker.email)
+          ));
+          jobs = emailJobsSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+        } catch(e) { console.log('Email jobs fallback error:', e); }
+      }
+
+      // Render everything
+      renderWorkerData(worker, jobs);
+
+    } catch(err) {
+      console.error('Worker portal load error:', err);
+      document.getElementById('dashLoading').innerHTML = '<div style="color:rgba(255,255,255,0.4);font-size:13px;">Unable to load data. Please refresh.</div>';
+    }
+  });
+</script>
+
+</body>
+</html>

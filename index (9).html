@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agape Property Management — One Platform. Every Property. Every Provider.</title>
+<meta name="description" content="Agape is an AI-powered property operations platform for property-management companies, independent hosts, rental owners, and the professionals who keep every property running.">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0A0A0A;
+  --black: #0E0E0E;
+  --card: #161616;
+  --card2: #1C1C1C;
+  --green: #4CAF50;
+  --green-dark: #388E3C;
+  --green-dim: rgba(76,175,80,0.12);
+  --text: #E8E2D9;
+  --muted: rgba(232,226,217,0.55);
+  --faint: rgba(232,226,217,0.35);
+  --border: rgba(255,255,255,0.09);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family:'Jost',sans-serif; background:var(--bg); color:var(--text); line-height:1.6; }
+img { max-width:100%; }
+a { color:inherit; text-decoration:none; }
+.serif { font-family:'Cormorant Garamond',serif; }
+.wrap { max-width:1100px; margin:0 auto; padding:0 24px; }
+.eyebrow { font-size:11px; letter-spacing:0.22em; text-transform:uppercase; color:var(--green); margin-bottom:14px; }
+.section { padding:90px 0; }
+.section-title { font-family:'Cormorant Garamond',serif; font-size:clamp(30px,5vw,46px); font-weight:400; line-height:1.15; margin-bottom:16px; }
+.section-sub { font-size:16px; color:var(--muted); max-width:640px; margin-bottom:40px; }
+.divider { border:none; border-top:1px solid var(--border); }
+
+/* NAV */
+.nav { position:fixed; top:0; left:0; right:0; z-index:200; background:rgba(10,10,10,0.88); backdrop-filter:blur(12px); border-bottom:1px solid var(--border); }
+.nav-inner { max-width:1100px; margin:0 auto; padding:0 24px; height:64px; display:flex; align-items:center; justify-content:space-between; gap:16px; }
+.nav-logo { font-family:'Cormorant Garamond',serif; font-size:24px; letter-spacing:0.04em; color:#fff; }
+.nav-logo span { color:var(--green); }
+.nav-links { display:flex; gap:26px; align-items:center; }
+.nav-links a { font-size:13px; color:var(--muted); transition:color .2s; }
+.nav-links a:hover { color:#fff; }
+.nav-cta { padding:9px 18px; background:var(--green); color:#0E0E0E !important; border-radius:6px; font-size:11px; font-weight:600; letter-spacing:0.14em; text-transform:uppercase; transition:background .2s; }
+.nav-cta:hover { background:var(--green-dark); }
+@media (max-width:820px){ .nav-links a:not(.nav-cta){ display:none; } }
+
+/* HERO */
+.hero { min-height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; padding:120px 24px 80px; position:relative; }
+.hero::before { content:''; position:absolute; inset:0; background:radial-gradient(ellipse at 50% 35%, rgba(76,175,80,0.10) 0%, transparent 65%); pointer-events:none; }
+.hero-title { font-family:'Cormorant Garamond',serif; font-size:clamp(40px,8vw,76px); font-weight:300; line-height:1.08; max-width:860px; }
+.hero-title em { font-style:italic; color:var(--green); }
+.hero-sub { font-size:17px; color:var(--muted); max-width:620px; margin:26px auto 38px; }
+.hero-ctas { display:flex; gap:14px; flex-wrap:wrap; justify-content:center; }
+.btn { display:inline-block; padding:15px 30px; border-radius:6px; font-size:12px; font-weight:600; letter-spacing:0.16em; text-transform:uppercase; transition:all .2s; }
+.btn-primary { background:var(--green); color:#0E0E0E; }
+.btn-primary:hover { background:var(--green-dark); }
+.btn-ghost { border:1px solid var(--border); color:var(--text); }
+.btn-ghost:hover { border-color:var(--green); color:var(--green); }
+.hero-tag { margin-top:56px; font-size:11px; letter-spacing:0.2em; text-transform:uppercase; color:var(--faint); }
+
+/* AUDIENCE CARDS */
+.grid-3 { display:grid; grid-template-columns:repeat(auto-fit,minmax(290px,1fr)); gap:22px; }
+.card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:34px 30px; }
+.card h3 { font-family:'Cormorant Garamond',serif; font-size:26px; font-weight:400; margin-bottom:6px; color:#fff; }
+.card .card-kicker { font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:var(--green); margin-bottom:12px; }
+.card p { font-size:14px; color:var(--muted); margin-bottom:16px; }
+.card ul { list-style:none; }
+.card li { font-size:13.5px; color:var(--muted); padding:7px 0 7px 24px; position:relative; border-bottom:1px solid rgba(255,255,255,0.05); }
+.card li:last-child { border-bottom:none; }
+.card li::before { content:'✓'; position:absolute; left:0; color:var(--green); font-size:12px; }
+
+/* PAY */
+.split { display:grid; grid-template-columns:1fr 1fr; gap:60px; align-items:center; }
+@media (max-width:860px){ .split { grid-template-columns:1fr; gap:36px; } }
+.pay-panel { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:36px; }
+.pay-row { display:flex; align-items:center; gap:14px; padding:13px 0; border-bottom:1px solid rgba(255,255,255,0.05); font-size:14px; color:var(--muted); }
+.pay-row:last-child { border-bottom:none; }
+.pay-num { width:26px; height:26px; flex-shrink:0; border-radius:50%; background:var(--green-dim); color:var(--green); font-size:12px; font-weight:600; display:flex; align-items:center; justify-content:center; }
+
+/* FLOW */
+.flow { counter-reset:step; display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:18px; }
+.flow-step { background:var(--card); border:1px solid var(--border); border-radius:10px; padding:22px; font-size:14px; color:var(--muted); position:relative; }
+.flow-step::before { counter-increment:step; content:counter(step,decimal-leading-zero); display:block; font-family:'Cormorant Garamond',serif; font-size:26px; color:var(--green); margin-bottom:8px; }
+
+/* CHIPS */
+.chips { display:flex; flex-wrap:wrap; gap:10px; }
+.chip { padding:9px 16px; border:1px solid var(--border); border-radius:999px; font-size:13px; color:var(--muted); }
+.chip:hover { border-color:var(--green); color:var(--text); }
+
+/* STORY */
+.story { background:var(--black); border-top:1px solid var(--border); border-bottom:1px solid var(--border); }
+.story-lines { font-family:'Cormorant Garamond',serif; font-size:clamp(20px,3vw,26px); font-weight:300; color:var(--text); line-height:1.7; margin:28px 0; }
+.story-lines em { color:var(--green); font-style:italic; }
+.story p { font-size:15.5px; color:var(--muted); max-width:720px; margin-bottom:18px; }
+
+/* TOUCH */
+.touch-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:18px; margin-top:8px; }
+.touch-card { background:var(--card2); border:1px solid var(--border); border-radius:10px; padding:26px 22px; }
+.touch-card h4 { font-family:'Cormorant Garamond',serif; font-size:21px; font-weight:400; color:#fff; margin-bottom:8px; }
+.touch-card p { font-size:13.5px; color:var(--muted); }
+.tagline { font-family:'Cormorant Garamond',serif; font-size:clamp(22px,3.4vw,30px); font-style:italic; color:var(--green); margin-top:38px; text-align:center; }
+
+/* WHY */
+.why-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:2px; background:var(--border); border:1px solid var(--border); border-radius:12px; overflow:hidden; }
+.why-cell { background:var(--bg); padding:30px 28px; }
+.why-cell h4 { font-family:'Cormorant Garamond',serif; font-size:22px; font-weight:400; color:#fff; margin-bottom:8px; }
+.why-cell p { font-size:14px; color:var(--muted); }
+
+/* FORM */
+.form-shell { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:44px; max-width:680px; margin:0 auto; }
+@media (max-width:600px){ .form-shell { padding:30px 22px; } }
+.f-row { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+@media (max-width:600px){ .f-row { grid-template-columns:1fr; } }
+.f-field { margin-bottom:16px; }
+.f-field label { display:block; font-size:10px; letter-spacing:0.18em; text-transform:uppercase; color:var(--faint); margin-bottom:6px; }
+.f-field input, .f-field select, .f-field textarea { width:100%; background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:6px; padding:13px 14px; font-family:'Jost',sans-serif; font-size:14px; color:#fff; outline:none; transition:border .2s; }
+.f-field input:focus, .f-field select:focus, .f-field textarea:focus { border-color:var(--green); }
+.f-field select { appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%238A8A8A'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 14px center; }
+.f-field select option { background:#161616; }
+.f-field textarea { min-height:100px; resize:vertical; }
+.f-submit { width:100%; padding:16px; background:var(--green); color:#0E0E0E; border:none; border-radius:6px; font-family:'Jost',sans-serif; font-size:12px; font-weight:600; letter-spacing:0.18em; text-transform:uppercase; cursor:pointer; transition:background .2s; }
+.f-submit:hover { background:var(--green-dark); }
+.form-ok { display:none; text-align:center; padding:30px 0 10px; }
+.form-ok .serif { font-size:28px; color:#fff; margin-bottom:8px; }
+.form-ok p { color:var(--muted); font-size:14px; }
+
+/* JOIN BAND */
+.join-band { text-align:center; background:linear-gradient(180deg, var(--black), var(--bg)); border-top:1px solid var(--border); }
+
+/* FOOTER */
+footer { border-top:1px solid var(--border); padding:56px 0 40px; }
+.foot-grid { display:grid; grid-template-columns:2fr 1fr 1fr; gap:40px; margin-bottom:40px; }
+@media (max-width:720px){ .foot-grid { grid-template-columns:1fr; } }
+.foot-logo { font-family:'Cormorant Garamond',serif; font-size:26px; color:#fff; margin-bottom:10px; }
+.foot-logo span { color:var(--green); }
+footer p, footer li { font-size:13.5px; color:var(--muted); }
+footer h5 { font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:var(--faint); margin-bottom:14px; }
+footer ul { list-style:none; }
+footer li { padding:5px 0; }
+footer li a:hover { color:var(--green); }
+.foot-bottom { border-top:1px solid var(--border); padding-top:24px; display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px; font-size:12px; color:var(--faint); }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="/" class="nav-logo">Agape <span>PM</span></a>
+    <div class="nav-links">
+      <a href="#ecosystem">Who It's For</a>
+      <a href="#how">How It Works</a>
+      <a href="#story">Our Story</a>
+      <a href="#touch">The Agape Touch</a>
+      <a href="/portal">Host Portal</a>
+      <a href="/join">Join the Team</a>
+      <a href="#founding-access" class="nav-cta">Request Founding Access</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="eyebrow">AI-Powered Property Operations</div>
+  <h1 class="hero-title">One Platform.<br>Every Property. <em>Every Provider.</em></h1>
+  <p class="hero-sub">Agape Property Management is built for property-management companies, independent hosts, rental owners, and the professionals who keep every property running. Coordinate services, verify completed work, manage supplies, pay vendors faster, and grow your business—all from one connected system.</p>
+  <div class="hero-ctas">
+    <a href="#founding-access" class="btn btn-primary">Request Founding Access</a>
+    <a href="/join" class="btn btn-ghost">Join the Agape Team</a>
+  </div>
+  <div class="hero-tag">Built in Dallas, Texas · Designed to scale beyond one market</div>
+</header>
+
+<!-- ECOSYSTEM -->
+<section class="section" id="ecosystem">
+  <div class="wrap">
+    <div class="eyebrow">The Ecosystem</div>
+    <h2 class="section-title">Built for the Entire Property-Care Ecosystem</h2>
+    <p class="section-sub">Agape connects the people who manage the property with the professionals who perform the work.</p>
+    <div class="grid-3">
+      <div class="card">
+        <div class="card-kicker">Property-Management Companies</div>
+        <h3>Run every property from one place</h3>
+        <p>Manage multiple properties, teams, vendors, and clients without relying on disconnected tools.</p>
+        <ul>
+          <li>Centralized property operations</li>
+          <li>Intelligent provider dispatch</li>
+          <li>Property-specific service checklists</li>
+          <li>Photo-verified quality control</li>
+          <li>Supply and inventory tracking</li>
+          <li>Owner and client reporting</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-kicker">Independent Hosts &amp; Rental Owners</div>
+        <h3>Professional standards without a big team</h3>
+        <p>Whether you manage two properties or twenty, Agape helps you maintain professional standards.</p>
+        <ul>
+          <li>Coordinate turnovers and recurring services</li>
+          <li>Dispatch trusted service professionals</li>
+          <li>Approve photo-verified service</li>
+          <li>Manage restocking and supplies</li>
+          <li>Track maintenance concerns</li>
+          <li>Pay vendors quickly</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-kicker">Service Professionals</div>
+        <h3>Find work. Prove quality. Build your business.</h3>
+        <p>Agape helps skilled providers find opportunities, manage assignments, demonstrate quality, and build repeat clientele.</p>
+        <ul>
+          <li>Cleaners &amp; property assistants</li>
+          <li>Movers &amp; handymen</li>
+          <li>HVAC, plumbing &amp; electrical</li>
+          <li>Interior designers &amp; stagers</li>
+          <li>Laundry &amp; restocking providers</li>
+          <li>Maintenance professionals</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PAY -->
+<section class="section" style="background:var(--black); border-top:1px solid var(--border); border-bottom:1px solid var(--border);">
+  <div class="wrap split">
+    <div>
+      <div class="eyebrow">Less Fees. More Control.</div>
+      <h2 class="section-title">Pay Your Vendors the Same Day</h2>
+      <p class="section-sub" style="margin-bottom:20px;">Long payment cycles make it difficult for service professionals to operate—and disconnected payment systems create more work for property managers.</p>
+      <p style="font-size:15px; color:var(--muted);">Agape is being built to give companies and hosts greater control over vendor payments while helping qualified professionals receive payment faster.</p>
+    </div>
+    <div class="pay-panel">
+      <div class="pay-row"><div class="pay-num">1</div>Approve completed work from the platform</div>
+      <div class="pay-row"><div class="pay-num">2</div>Connect payment approval to service verification</div>
+      <div class="pay-row"><div class="pay-num">3</div>Release vendor payments faster</div>
+      <div class="pay-row"><div class="pay-num">4</div>Reduce unnecessary platform fee layers</div>
+      <div class="pay-row"><div class="pay-num">5</div>Maintain clearer records for every property and provider</div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section" id="how">
+  <div class="wrap">
+    <div class="eyebrow">One Connected System</div>
+    <h2 class="section-title">Property Operations Should Feel Connected</h2>
+    <p class="section-sub">The work happening across a property is connected. The systems managing that work should be connected too.</p>
+    <div class="flow">
+      <div class="flow-step">A service need is identified.</div>
+      <div class="flow-step">The appropriate provider is matched or dispatched.</div>
+      <div class="flow-step">The provider receives property-specific instructions.</div>
+      <div class="flow-step">Work is completed using an assigned checklist.</div>
+      <div class="flow-step">Photos and service documentation are submitted.</div>
+      <div class="flow-step">The work is reviewed and approved.</div>
+      <div class="flow-step">The provider can be paid.</div>
+      <div class="flow-step">Records are stored for the property, owner, and management team.</div>
+    </div>
+  </div>
+</section>
+
+<!-- AI -->
+<section class="section" style="padding-top:0;">
+  <div class="wrap">
+    <div class="eyebrow">Intelligence Built In</div>
+    <h2 class="section-title">AI-Powered Property Operations</h2>
+    <p class="section-sub">Agape is designed to help property operators make faster, better-informed decisions. The platform can support:</p>
+    <div class="chips">
+      <span class="chip">Intelligent provider matching</span>
+      <span class="chip">Automated job coordination</span>
+      <span class="chip">Recurring service scheduling</span>
+      <span class="chip">Property-specific workflow automation</span>
+      <span class="chip">Service reminders &amp; alerts</span>
+      <span class="chip">Issue identification &amp; escalation</span>
+      <span class="chip">Quality-control monitoring</span>
+      <span class="chip">Supply-level tracking</span>
+      <span class="chip">Provider performance records</span>
+      <span class="chip">Business &amp; property reporting</span>
+    </div>
+    <p class="tagline">The goal is not more complicated technology. The goal is one calm operation.</p>
+  </div>
+</section>
+
+<!-- STORY -->
+<section class="section story" id="story">
+  <div class="wrap">
+    <div class="eyebrow">Our Story</div>
+    <h2 class="section-title">Agape Was Built in the Work—Not in a Boardroom</h2>
+    <p>Agape began as a cleaning company serving short-term-rental properties. It did not take long to learn that keeping a property guest-ready required much more than cleaning. It required laundry, interior design, handyman services, supply management, restocking, maintenance coordination, and reliable people who understood hospitality.</p>
+    <div class="story-lines">
+      We cleaned the properties. We managed the laundry.<br>
+      We handled the restocking. We coordinated repairs.<br>
+      We supported the hosts. We prepared each property for the next guest.<br>
+      <em>The work was connected. The systems were not.</em>
+    </div>
+    <p>That hands-on service model grew across multiple states and helped influence a more connected standard of property care. Along the way, we trained service professionals in white-glove techniques, strengthened property operations, and learned exactly where hosts, managers, and providers were losing time, money, visibility, and control.</p>
+    <p><strong style="color:var(--text);">Agape is the platform we needed while doing the work.</strong> Today, we are building one intelligent operating system where property-management companies, independent hosts, rental owners, and skilled service providers can coordinate jobs, verify quality, manage supplies, pay vendors faster, reduce platform costs, and grow their businesses.</p>
+  </div>
+</section>
+
+<!-- WHITE GLOVE + TOUCH -->
+<section class="section" id="touch">
+  <div class="wrap">
+    <div class="eyebrow">A White-Glove Service Standard</div>
+    <h2 class="section-title">The Agape Touch</h2>
+    <p class="section-sub">A property should feel intentionally cared for. The Agape Touch is an optional supply and sensory experience for hosts and operators who want a more distinctive property standard—delivered by providers trained in hotel-style presentation, room-by-room inspections, photo documentation, and white-glove service techniques.</p>
+    <div class="touch-grid">
+      <div class="touch-card"><h4>Exclusive Organic Cleaning Products</h4><p>Access approved organic cleaning options created for thoughtful, professional property care.</p></div>
+      <div class="touch-card"><h4>Customizable Scents</h4><p>Develop a signature scent experience that strengthens the guest's memory of the stay.</p></div>
+      <div class="touch-card"><h4>Supply Purchasing</h4><p>Select approved cleaning products, guest essentials, and operational supplies through Agape.</p></div>
+      <div class="touch-card"><h4>Restocking Support</h4><p>Create property-specific supply standards and restocking preferences.</p></div>
+      <div class="touch-card"><h4>Build Your Own</h4><p>Use the complete Agape Touch, choose only the elements you need, or build your own supply system inside the platform.</p></div>
+    </div>
+    <p class="tagline">Your property. Your standards. Your signature.</p>
+  </div>
+</section>
+
+<!-- PURPOSE BUILT -->
+<section class="section" style="background:var(--black); border-top:1px solid var(--border); border-bottom:1px solid var(--border);">
+  <div class="wrap">
+    <div class="eyebrow">Purpose Built</div>
+    <h2 class="section-title">Growth Systems for Your Business</h2>
+    <p class="section-sub">Property operations are only one side of the business. Qualified hosts, management companies, and service providers can add a customized business-growth system through Purpose Built—brand development, website design, CRM setup, sales funnels, booking workflows, review automation, and more.</p>
+    <div class="split">
+      <div class="card">
+        <div class="card-kicker">For Hosts &amp; Operators</div>
+        <h3>A branded client system</h3>
+        <p>A branded client-acquisition and communication system for your property business.</p>
+      </div>
+      <div class="card">
+        <div class="card-kicker">For Service Professionals</div>
+        <h3>Your own business foundation</h3>
+        <p>Learn the skill, set the foundation of your LLC, and launch an independent, professional service business on your own platform.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHY -->
+<section class="section">
+  <div class="wrap">
+    <div class="eyebrow">Why Agape</div>
+    <h2 class="section-title">Fewer Platforms. More Control.</h2>
+    <div class="why-grid" style="margin-top:30px;">
+      <div class="why-cell"><h4>Fewer Platforms</h4><p>Reduce the need to switch between scheduling tools, spreadsheets, payment systems, photo folders, supply records, and vendor conversations.</p></div>
+      <div class="why-cell"><h4>Better Visibility</h4><p>Know what was assigned, what was completed, what requires attention, and what has been paid.</p></div>
+      <div class="why-cell"><h4>Verified Quality</h4><p>Connect completed checklists and photo proof to each service assignment.</p></div>
+      <div class="why-cell"><h4>Faster Payments</h4><p>Help approved vendors receive payment faster after their work has been verified.</p></div>
+      <div class="why-cell"><h4>More Control</h4><p>Maintain control over properties, providers, supplies, service standards, and operating costs.</p></div>
+      <div class="why-cell"><h4>Built From Experience</h4><p>Shaped by years of hands-on work inside short-term-rental and property-service operations.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- FOUNDING ACCESS -->
+<section class="section" id="founding-access" style="background:var(--black); border-top:1px solid var(--border);">
+  <div class="wrap">
+    <div style="text-align:center; margin-bottom:44px;">
+      <div class="eyebrow">Early Access</div>
+      <h2 class="section-title">Request Founding Access</h2>
+      <p class="section-sub" style="margin:0 auto;">Agape is building its founding community of property-management companies, hosts, rental owners, and service professionals. Complete the form to receive platform updates and early-access information.</p>
+    </div>
+    <div class="form-shell">
+      <form name="founding-access" method="POST" data-netlify="true" netlify-honeypot="bot-field" id="faForm">
+        <input type="hidden" name="form-name" value="founding-access">
+        <p style="display:none;"><label>Don't fill this out: <input name="bot-field"></label></p>
+        <div class="f-row">
+          <div class="f-field"><label for="fa-name">Name *</label><input id="fa-name" name="name" required placeholder="Your full name"></div>
+          <div class="f-field"><label for="fa-email">Email *</label><input id="fa-email" name="email" type="email" required placeholder="you@example.com"></div>
+        </div>
+        <div class="f-row">
+          <div class="f-field"><label for="fa-phone">Phone</label><input id="fa-phone" name="phone" type="tel" placeholder="(555) 555-5555"></div>
+          <div class="f-field"><label for="fa-company">Company or Business Name</label><input id="fa-company" name="company" placeholder="Your company"></div>
+        </div>
+        <div class="f-row">
+          <div class="f-field">
+            <label for="fa-role">I am a *</label>
+            <select id="fa-role" name="role" required>
+              <option value="">Select one…</option>
+              <option>Property-management company</option>
+              <option>Independent host</option>
+              <option>Rental owner</option>
+              <option>Service professional</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="f-field"><label for="fa-count">Number of Properties Managed</label><input id="fa-count" name="properties" placeholder="e.g. 5"></div>
+        </div>
+        <div class="f-field"><label for="fa-service">Primary Service Offered</label><input id="fa-service" name="primary_service" placeholder="e.g. Cleaning, HVAC, hosting"></div>
+        <div class="f-field"><label for="fa-goal">What would you like Agape to help you accomplish?</label><textarea id="fa-goal" name="goal" placeholder="Tell us about your properties or your services…"></textarea></div>
+        <button type="submit" class="f-submit">Request Founding Access</button>
+      </form>
+      <div class="form-ok" id="faOk">
+        <div class="serif">Thank you.</div>
+        <p>Your request has been received. We'll be in touch with platform updates and early-access information.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- JOIN BAND -->
+<section class="section join-band">
+  <div class="wrap">
+    <div class="eyebrow">Service Professionals</div>
+    <h2 class="section-title">Join the Agape Team</h2>
+    <p class="section-sub" style="margin:0 auto 34px;">Are you a cleaner, mover, HVAC technician, plumber, handyman, designer, laundry provider, property assistant, or another property-service professional? Join Agape's growing community and learn about upcoming opportunities, training, property assignments, and business-growth support.</p>
+    <a href="/join" class="btn btn-primary">Join the Agape Team</a>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <div class="foot-logo">Agape <span>PM</span></div>
+        <p>One platform. Every property. Every provider.<br>Built in Dallas, Texas. Designed to scale beyond one market.</p>
+      </div>
+      <div>
+        <h5>Platform</h5>
+        <ul>
+          <li><a href="#ecosystem">Who It's For</a></li>
+          <li><a href="#how">How It Works</a></li>
+          <li><a href="#touch">The Agape Touch</a></li>
+          <li><a href="#founding-access">Request Founding Access</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Portals</h5>
+        <ul>
+          <li><a href="/portal">Host Portal</a></li>
+          <li><a href="/join">Join the Team</a></li>
+          <li><a href="/operator">Operator Login</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 Agape Property Management</span>
+      <span>AI-powered property operations · White-glove service standards</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+// Netlify form: AJAX submit so visitors stay on the page
+document.getElementById('faForm').addEventListener('submit', function(e){
+  e.preventDefault();
+  var form = e.target;
+  var data = new URLSearchParams(new FormData(form)).toString();
+  fetch('/', { method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded'}, body:data })
+    .then(function(){ form.style.display='none'; document.getElementById('faOk').style.display='block'; })
+    .catch(function(){ form.style.display='none'; document.getElementById('faOk').style.display='block'; });
+});
+</script>
+</body>
+</html>

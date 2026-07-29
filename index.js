@@ -1,0 +1,11 @@
+/host/* /host/index.html 200
+/portal/* /portal/index.html 200
+/worker/* /worker/index.html 200
+/workerportal/* /workerportal/index.html 200
+/operator/* /operator/index.html 200
+/pay/* /pay/index.html 200
+/join/* /join/index.html 200
+/dispatch/* /dispatch/index.html 200
+/services/* /services/index.html 200
+/report/* /report/index.html 200
+/guest/* /guest/index.html 200
